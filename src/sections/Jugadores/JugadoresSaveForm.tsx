@@ -2,11 +2,16 @@ import { TextInput } from "@mantine/core";
 import DataForm from "../SharedKernel/DataForm";
 import type { Jugador } from "../../modules/Jugadores/Domain/Jugador";
 import { useJugadoresContext } from "./JugadoresContext";
-import { CrearJugador } from "../../modules/Jugadores/Application/CrearJugador";
+import { 
+    CrearJugador, 
+    EditarJugador,
+    CrearJugadorSchema,
+    EditarJugadorSchema,
+    type CrearJugadorData,
+    type EditarJugadorData
+} from "../../modules/Jugadores/Application";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import EditarJugador from "../../modules/Jugadores/Application/EditarJugador";
-import { z } from "zod";
 
 export interface JugadoresSaveFormProps {
     afterSubmit?: () => void;
@@ -27,18 +32,14 @@ export default function JugadoresSaveForm(props: JugadoresSaveFormProps) {
     const initialValues = query.data ?? undefined;
     const title = id ? 'Editar jugador' : 'Nuevo jugador';
 
-    const schema = z.object({
-        nombre: z.string().min(1),
-        apellido: z.string().min(1),
-        telefono: z.string().min(1),
-        email: z.preprocess(val => val == '' ? null : val, z.string().nullish())
-    });
+    // Usar el schema apropiado según si es crear o editar
+    const schema = id ? EditarJugadorSchema : CrearJugadorSchema;
 
-    const onSubmit = async (values: Partial<Jugador>) => {
+    const onSubmit = async (values: CrearJugadorData | EditarJugadorData) => {
         if (id) {
-            await EditarJugador(repository, values, id);
+            await EditarJugador(repository, values as EditarJugadorData, id);
         } else {
-            await CrearJugador(repository, values as Jugador);
+            await CrearJugador(repository, values as CrearJugadorData);
         }
 
         if (props.afterSubmit) {
@@ -60,10 +61,29 @@ export default function JugadoresSaveForm(props: JugadoresSaveFormProps) {
         >
             {(form) => (
                 <>
-                    <TextInput required label='Nombre' {...form.getInputProps('nombre')} />
-                    <TextInput required label='Apellido' {...form.getInputProps('apellido')} />
-                    <TextInput required label='Teléfono' {...form.getInputProps('telefono')} />
-                    <TextInput label='Email' {...form.getInputProps('email')} />
+                    <TextInput 
+                        required={!id} 
+                        label='Nombre' 
+                        placeholder="Ingrese el nombre del jugador"
+                        {...form.getInputProps('nombre')} 
+                    />
+                    <TextInput 
+                        required={!id} 
+                        label='Apellido' 
+                        placeholder="Ingrese el apellido del jugador"
+                        {...form.getInputProps('apellido')} 
+                    />
+                    <TextInput 
+                        required={!id} 
+                        label='Teléfono' 
+                        placeholder="Ingrese el número de teléfono"
+                        {...form.getInputProps('telefono')} 
+                    />
+                    <TextInput 
+                        label='Email' 
+                        placeholder="Ingrese el email (opcional)"
+                        {...form.getInputProps('email')} 
+                    />
                 </>
             )}
         </DataForm>
