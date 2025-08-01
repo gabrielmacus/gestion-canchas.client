@@ -2,7 +2,7 @@ import React from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { JugadoresContextProvider } from '../../Jugadores/JugadoresContext'
 import { createComposedProvider } from './ProviderComposer'
-import { BrowserRouter } from 'react-router'
+import { HashRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals';
 import { CanchasContextProvider } from '../../Canchas/CanchasContext';
@@ -29,7 +29,7 @@ const LocalDatesProvider = ({ children }: { children: React.ReactNode }) => (
 )
 
 const providers = [
-    BrowserRouter,
+    HashRouter,
     MantineProvider,
     ModalsProvider,
     ReactQueryProvider,
