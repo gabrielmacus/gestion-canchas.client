@@ -1,4 +1,4 @@
-import { AppShell, Burger, Grid, Group, NavLink, Text } from "@mantine/core";
+import { AppShell, Burger, Group, NavLink, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router";
