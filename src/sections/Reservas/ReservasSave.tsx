@@ -14,8 +14,9 @@ import ListarCanchasPaginadas from "../../modules/Canchas/Application/ListarCanc
 import { ListarJugadoresPaginados } from "../../modules/Jugadores/Application/ListarJugadoresPaginados";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { set, z } from "zod";
 import { DateTimePicker, getTimeRange, TimeGrid } from '@mantine/dates';
+import CrearReservaSchema from "../../modules/Reservas/Application/CrearReservaSchema";
+import EditarReservaSchema from "../../modules/Reservas/Application/EditarReservaSchema";
 import dayjs from "dayjs";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
@@ -84,14 +85,7 @@ export default function ReservasSave(_: ReservasSaveProps) {
 
     const title = id ? 'Editar reserva' : 'Nueva reserva'
 
-    const schema = z.object({
-        cancha_id: z.string().min(1, 'La cancha es requerida'),
-        jugador_id: z.string().min(1, 'El jugador es requerido'),
-        fecha_hora: z.string()
-            .min(1, 'La fecha y hora son requeridas')
-            .transform(str => dayjs(str).utc().format("YYYY-MM-DD HH:mm:ss")),
-        duracion: z.number().min(60, 'La duración mínima es de 60 minutos')
-    })
+    const schema = id ? EditarReservaSchema : CrearReservaSchema
 
     const onSubmit = async (values: Partial<Reserva>) => {
         if (id) {
