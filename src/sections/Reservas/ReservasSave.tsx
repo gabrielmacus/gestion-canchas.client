@@ -8,13 +8,18 @@ import type PaginatedResponse from "../../modules/SharedKernel/Domain/PaginatedR
 import { useReservasContext } from "./ReservasContext";
 import { useCanchasContext } from "../Canchas/CanchasContext";
 import { useJugadoresContext } from "../Jugadores/JugadoresContext";
-import CrearReserva from "../../modules/Reservas/Application/CrearReserva";
-import EditarReserva from "../../modules/Reservas/Application/EditarReserva";
+import {
+    CrearReserva,
+    EditarReserva,
+    CrearReservaSchema,
+    EditarReservaSchema,
+    type CrearReservaData,
+    type EditarReservaData
+} from "../../modules/Reservas/Application";
 import ListarCanchasPaginadas from "../../modules/Canchas/Application/ListarCanchasPaginadas";
 import { ListarJugadoresPaginados } from "../../modules/Jugadores/Application/ListarJugadoresPaginados";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
-import { set, z } from "zod";
 import { DateTimePicker, getTimeRange, TimeGrid } from '@mantine/dates';
 import dayjs from "dayjs";
 import { useDisclosure } from "@mantine/hooks";
@@ -31,7 +36,6 @@ export default function ReservasSave(_: ReservasSaveProps) {
     const { repository: canchaRepository } = useCanchasContext()
     const { repository: jugadorRepository } = useJugadoresContext()
     const [openedJugadorModal, { open: openJugadorModal, close: closeJugadorModal }] = useDisclosure(false);
-    //const [values, setValues] = useState<Partial<Reserva>>({})
     const navigate = useNavigate()
 
     const reservaQuery = useQuery<Reserva | null>({
@@ -51,19 +55,6 @@ export default function ReservasSave(_: ReservasSaveProps) {
         })
     })
 
-    /*
-    const reservasExistentesQuery = useQuery<PaginatedResponse<Reserva>>({
-        queryKey: ['reservas-existentes'],
-        queryFn: () => ListarReservasPaginadas(reservaRepository, {
-            filters: [{
-                field: 'cancha_id',
-                operator: 'eq',
-                value: cancha_id
-            }],
-            pagination: { page: 1, size: 1000 },
-        })
-    })*/
-
     const jugadoresQuery = useQuery<PaginatedResponse<Jugador>>({
         queryKey: ['jugadores-all'],
         queryFn: () => ListarJugadoresPaginados(jugadorRepository, {
@@ -78,26 +69,20 @@ export default function ReservasSave(_: ReservasSaveProps) {
 
     const initialValues = useMemo(() => reservaQuery.data ? {
         ...reservaQuery.data,
-        //TODO: Unificar el asunto de la zona horaria
-        fecha_hora: dayjs(reservaQuery.data.fecha_hora).add(-3, 'hours').format("YYYY-MM-DD HH:mm:ss")
+        // Convertir la fecha para mostrar en el formulario
+        fecha_hora: dayjs(reservaQuery.data.fecha_hora).format("YYYY-MM-DDTHH:mm:ss")
     } : { duracion: 60 }, [reservaQuery.data])
 
     const title = id ? 'Editar reserva' : 'Nueva reserva'
 
-    const schema = z.object({
-        cancha_id: z.string().min(1, 'La cancha es requerida'),
-        jugador_id: z.string().min(1, 'El jugador es requerido'),
-        fecha_hora: z.string()
-            .min(1, 'La fecha y hora son requeridas')
-            .transform(str => dayjs(str).utc().format("YYYY-MM-DD HH:mm:ss")),
-        duracion: z.number().min(60, 'La duración mínima es de 60 minutos')
-    })
+    // Usar el schema apropiado según si es crear o editar
+    const schema = id ? EditarReservaSchema : CrearReservaSchema;
 
-    const onSubmit = async (values: Partial<Reserva>) => {
+    const onSubmit = async (values: CrearReservaData | EditarReservaData) => {
         if (id) {
-            await EditarReserva(reservaRepository, values, id)
+            await EditarReserva(reservaRepository, values as EditarReservaData, id)
         } else {
-            await CrearReserva(reservaRepository, values as Omit<Reserva, 'id'>)
+            await CrearReserva(reservaRepository, values as CrearReservaData)
         }
         navigate('/reservas')
     }
@@ -123,7 +108,6 @@ export default function ReservasSave(_: ReservasSaveProps) {
                 }} />
             </Modal>
             <DataForm
-                //onValuesChange={setValues}
                 title={title}
                 onSubmit={onSubmit}
                 initialValues={initialValues}
@@ -135,7 +119,7 @@ export default function ReservasSave(_: ReservasSaveProps) {
                 {(form) => (
                     <>
                         <Select
-                            required
+                            required={!id}
                             label="Cancha"
                             placeholder="Seleccione una cancha"
                             data={canchaOptions}
@@ -146,7 +130,7 @@ export default function ReservasSave(_: ReservasSaveProps) {
                         />
                         <Stack gap={'xs'}>
                             <Select
-                                required
+                                required={!id}
                                 label="Jugador"
                                 placeholder="Seleccione un jugador"
                                 data={jugadorOptions}
@@ -167,10 +151,11 @@ export default function ReservasSave(_: ReservasSaveProps) {
                         </Stack>
 
                         <DateTimePicker
-                            required
+                            required={!id}
                             label="Fecha/hora"
                             placeholder="Selecciona fecha y hora"
                             valueFormat="DD/MM/YYYY HH:mm"
+                            description="La hora debe ser exacta (sin minutos ni segundos)"
 
                             timePickerProps={{
                                 withDropdown: true,
@@ -183,11 +168,9 @@ export default function ReservasSave(_: ReservasSaveProps) {
                             {...form.getInputProps('fecha_hora')}
                         />
 
-                        {/* <TimeGrid
-                            data={getTimeRange({ startTime: '08:00', endTime: '23:00', interval: '01:00' })}
-                        /> */}
-
-                        <Input.Wrapper label="Duracion"
+                        <Input.Wrapper 
+                            label="Duración"
+                            description="Duración de la reserva en horas (mínimo 1 hora, máximo 4 horas)"
                             error={form.errors.duracion}
                         >
                             <Slider
