@@ -1,4 +1,4 @@
-import { Box, Group, LoadingOverlay, Paper, ScrollArea, Table, Text } from "@mantine/core";
+import { Box, Center, Group, LoadingOverlay, Paper, ScrollArea, Table, Text } from "@mantine/core";
 import DataPagination from "./DataPagination";
 import type { DataTableAction } from "./DataTableActions";
 import DataTableActions from "./DataTableActions";
@@ -29,7 +29,7 @@ export default function DataTable<T>({ columns, data, id_accessor, paginationDat
     const _id_accessor = id_accessor ?? 'id' as keyof T
     const hasActions = actions && actions.length > 0
     const shouldRenderFooter = paginationData || hasActions
-
+    const hasRows = data && data.length > 0
     const renderHeaders = () => {
         return columns.map((column) => (
             <Table.Th key={column.accessor as string}>{column.label}</Table.Th>
@@ -51,6 +51,12 @@ export default function DataTable<T>({ columns, data, id_accessor, paginationDat
         ))
     }
 
+    const renderEmptyState = () => {
+        return <Center bg={'gray.2'} h={100} p={'md'}>
+            <Text c={'gray.6'}>Sin datos para mostrar</Text>
+        </Center>
+    }
+
 
     return <Paper shadow="sm" p="lg" maw={900} >
         <Box pos="relative"  >
@@ -69,10 +75,12 @@ export default function DataTable<T>({ columns, data, id_accessor, paginationDat
                     </Table.Thead>
 
                     <Table.Tbody>
-                        {renderRows()}
+                        {hasRows && renderRows()}
+
                     </Table.Tbody>
 
                 </Table>
+                {!hasRows && renderEmptyState()}
             </ScrollArea>
             {shouldRenderFooter && <Group justify="space-between">
                 {paginationData &&

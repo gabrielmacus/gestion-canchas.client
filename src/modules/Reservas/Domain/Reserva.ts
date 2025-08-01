@@ -5,4 +5,6 @@ export interface Reserva extends BaseEntity {
     jugador_id: string;
     fecha_hora: string;
     duracion: number;
+    jugador_nombre: string;
+    cancha_nombre: string;
 }
