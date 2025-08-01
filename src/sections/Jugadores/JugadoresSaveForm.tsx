@@ -6,8 +6,7 @@ import { CrearJugador } from "../../modules/Jugadores/Application/CrearJugador";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditarJugador from "../../modules/Jugadores/Application/EditarJugador";
-import CrearJugadorSchema from "../../modules/Jugadores/Application/CrearJugadorSchema";
-import EditarJugadorSchema from "../../modules/Jugadores/Application/EditarJugadorSchema";
+import JugadorSchema from "../../modules/Jugadores/Application/JugadorSchema";
 
 export interface JugadoresSaveFormProps {
     afterSubmit?: () => void;
@@ -28,7 +27,7 @@ export default function JugadoresSaveForm(props: JugadoresSaveFormProps) {
     const initialValues = query.data ?? undefined;
     const title = id ? 'Editar jugador' : 'Nuevo jugador';
 
-    const schema = id ? EditarJugadorSchema : CrearJugadorSchema;
+    const schema = JugadorSchema;
 
     const onSubmit = async (values: Partial<Jugador>) => {
         if (id) {

@@ -15,8 +15,7 @@ import { ListarJugadoresPaginados } from "../../modules/Jugadores/Application/Li
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { DateTimePicker, getTimeRange, TimeGrid } from '@mantine/dates';
-import CrearReservaSchema from "../../modules/Reservas/Application/CrearReservaSchema";
-import EditarReservaSchema from "../../modules/Reservas/Application/EditarReservaSchema";
+import ReservaSchema from "../../modules/Reservas/Application/ReservaSchema";
 import dayjs from "dayjs";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
@@ -85,7 +84,7 @@ export default function ReservasSave(_: ReservasSaveProps) {
 
     const title = id ? 'Editar reserva' : 'Nueva reserva'
 
-    const schema = id ? EditarReservaSchema : CrearReservaSchema
+    const schema = ReservaSchema
 
     const onSubmit = async (values: Partial<Reserva>) => {
         if (id) {

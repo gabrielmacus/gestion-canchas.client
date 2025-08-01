@@ -1,7 +1,7 @@
 import { z } from "zod";
 import dayjs from "dayjs";
 
-const EditarReservaSchema = z.object({
+const ReservaSchema = z.object({
     cancha_id: z.string().min(1, 'La cancha es requerida').optional(),
     jugador_id: z.string().min(1, 'El jugador es requerido').optional(),
     fecha_hora: z.string()
@@ -43,4 +43,4 @@ const EditarReservaSchema = z.object({
         .optional()
 });
 
-export default EditarReservaSchema;
+export default ReservaSchema;

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const EditarJugadorSchema = z.object({
+const JugadorSchema = z.object({
     nombre: z.string()
         .transform(val => val.trim())
         .refine(val => val.length >= 3 && val.length <= 100, {
@@ -27,6 +27,9 @@ const EditarJugadorSchema = z.object({
         .refine(val => !val || /^[^@]+@[^@]+\.[^@]+$/.test(val), {
             message: "El email no es válido"
         })
+}).refine(data => data.email || data.telefono, {
+    message: "Debe proporcionar al menos un email o un teléfono",
+    path: ["email"] // Mostrar el error en el campo email
 });
 
-export default EditarJugadorSchema;
+export default JugadorSchema;
