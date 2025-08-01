@@ -88,7 +88,7 @@ export default function ReservasList() {
 
     const rowActions: DataRowAction<Reserva>[] = [
         EditRowAction(module, navigate),
-        DeleteRowAction(module, async (rowItem) => {
+        DeleteRowAction('¿Desea eliminar la reserva?', async (rowItem) => {
             await EliminarReserva(repository, rowItem.id)
             await query.refetch()
         })

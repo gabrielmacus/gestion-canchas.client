@@ -43,7 +43,7 @@ export default function CanchasList() {
     ]
     const rowActions: DataRowAction<Cancha>[] = [
         EditRowAction(module, navigate),
-        DeleteRowAction(module, async (rowItem) => {
+        DeleteRowAction('¿Desea eliminar la cancha?', async (rowItem) => {
             await EliminarCancha(repository, rowItem.id)
             await query.refetch()
         })

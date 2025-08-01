@@ -46,7 +46,7 @@ export default function JugadoresList() {
     ]
     const rowActions: DataRowAction<Jugador>[] = [
         EditRowAction(module, navigate),
-        DeleteRowAction(module, async (rowItem) => {
+        DeleteRowAction('¿Desea eliminar el jugador?', async (rowItem) => {
             await EliminarJugador(repository, rowItem.id)
             await query.refetch()
         })
