@@ -2,6 +2,7 @@ import { ActionIcon, Menu, Text } from "@mantine/core"
 import { IconDots } from "@tabler/icons-react"
 import type { Icon } from "@tabler/icons-react"
 import IconWrap from "./IconWrap"
+import { notifications } from "@mantine/notifications"
 
 export interface DataRowAction<T> {
     label: string
@@ -29,7 +30,18 @@ export default function DataRowActions<T>({ actions, rowItem }: DataRowActionsPr
                 <Menu.Item
                     leftSection={action.icon && <IconWrap size={16} icon={action.icon} />}
                     key={action.label}
-                    onClick={() => action.onClick(rowItem)}
+                    onClick={() => {
+                        try {
+                            action.onClick(rowItem)
+                        } catch (error) {
+                            console.error(error)
+                            notifications.show({
+                                title: 'Error',
+                                message: 'Ocurrió un error al ejecutar la acción. Compruebe que los datos sean correctos e intente nuevamente',
+                                color: 'red'
+                            })
+                        }
+                    }}
                 >
                     <Text size="xs">{action.label}</Text>
                 </Menu.Item>
