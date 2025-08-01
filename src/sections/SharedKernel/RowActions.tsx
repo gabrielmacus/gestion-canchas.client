@@ -4,6 +4,7 @@ import type { DataRowAction } from "./DataRowActions"
 import type BaseEntity from "../../modules/SharedKernel/Domain/BaseEntity"
 import { modals } from "@mantine/modals"
 import { Text } from "@mantine/core"
+import { notifications } from "@mantine/notifications"
 
 export function EditRowAction<T extends BaseEntity>(module: string, navigate: NavigateFunction): DataRowAction<T> {
     return {
@@ -30,8 +31,17 @@ export function DeleteRowAction<T extends BaseEntity>(
                     confirm: "Confirmar",
                     cancel: "Cancelar"
                 },
-                onConfirm: () => {
-                    onConfirm?.(rowItem)
+                onConfirm: async () => {
+                    try {
+                        await onConfirm?.(rowItem)
+                    } catch (error) {
+                        console.error(error)
+                        notifications.show({
+                            title: 'Error',
+                            message: 'Ocurrió un error al ejecutar la acción. Compruebe que los datos sean correctos e intente nuevamente',
+                            color: 'red'
+                        })
+                    }
                 }
             })
         }

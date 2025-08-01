@@ -14,6 +14,7 @@ import { DeleteRowAction } from "../SharedKernel/RowActions";
 import { EliminarJugador } from "../../modules/Jugadores/Application/EliminarJugador";
 import JugadoresListFilters from "./JugadoresListFilters";
 import type { Filter } from "../../modules/SharedKernel/Domain/Criteria";
+import { notifications } from "@mantine/notifications";
 
 
 export default function JugadoresList() {
@@ -47,8 +48,17 @@ export default function JugadoresList() {
     const rowActions: DataRowAction<Jugador>[] = [
         EditRowAction(module, navigate),
         DeleteRowAction('¿Desea eliminar el jugador?', async (rowItem) => {
-            await EliminarJugador(repository, rowItem.id)
-            await query.refetch()
+            try {
+                await EliminarJugador(repository, rowItem.id)
+                await query.refetch()
+            } catch (error) {
+                notifications.show({
+                    title: 'Error al eliminar el jugador',
+                    message: 'Compruebe que el jugador no tenga reservas asociadas e intente nuevamente. Si el problema persiste, contacte al administrador.',
+                    color: 'red',
+                    autoClose: 20000
+                })
+            }
         })
     ]
     return <MainLayout>

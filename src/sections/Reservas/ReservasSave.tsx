@@ -1,4 +1,4 @@
-import { Select, Modal, Input, Stack, Button, Box, Slider } from "@mantine/core";
+import { Select, Modal, Input, Stack, Button, Box, Slider, LoadingOverlay } from "@mantine/core";
 import MainLayout from "../SharedKernel/Layouts/MainLayout";
 import DataForm from "../SharedKernel/DataForm";
 import type { Reserva } from "../../modules/Reservas/Domain/Reserva";
@@ -22,6 +22,7 @@ import { IconPlus } from "@tabler/icons-react";
 import JugadoresSaveForm from "../Jugadores/JugadoresSaveForm";
 //import { ListarReservasPaginadas } from "../../modules/Reservas/Application/ListarReservasPaginadas";
 import { useMemo } from "react";
+import EntityToEditNotFoundAlert from "../SharedKernel/EntityToEditNotFoundAlert";
 
 export interface ReservasSaveProps { }
 
@@ -109,100 +110,106 @@ export default function ReservasSave(_: ReservasSaveProps) {
 
     return (
         <MainLayout>
-            <Modal opened={openedJugadorModal} onClose={closeJugadorModal}>
-                <JugadoresSaveForm afterSubmit={() => {
-                    closeJugadorModal()
-                    jugadoresQuery.refetch()
-                }} />
-            </Modal>
-            <DataForm
-                //onValuesChange={setValues}
-                title={title}
-                onSubmit={onSubmit}
-                initialValues={initialValues}
-                schema={schema}
-                onSubmitError={(error) => {
-                    console.error(error)
-                }}
-            >
-                {(form) => (
-                    <>
-                        <Select
-                            required
-                            label="Cancha"
-                            placeholder="Seleccione una cancha"
-                            data={canchaOptions}
-                            searchable
-                            key={form.key('cancha_id')}
-                            {...form.getInputProps('cancha_id')}
+            <Box pos="relative">
 
-                        />
-                        <Stack gap={'xs'}>
+                <Modal opened={openedJugadorModal} onClose={closeJugadorModal}>
+                    <JugadoresSaveForm afterSubmit={() => {
+                        closeJugadorModal()
+                        jugadoresQuery.refetch()
+                    }} />
+                </Modal>
+                <DataForm
+                    //onValuesChange={setValues}
+                    disableSubmit={reservaQuery.isError}
+                    title={title}
+                    onSubmit={onSubmit}
+                    initialValues={initialValues}
+                    schema={schema}
+                    onSubmitError={(error) => {
+                        console.error(error)
+                    }}
+                >
+                    {(form) => (
+                        <>
                             <Select
                                 required
-                                label="Jugador"
-                                placeholder="Seleccione un jugador"
-                                data={jugadorOptions}
+                                label="Cancha"
+                                placeholder="Seleccione una cancha"
+                                data={canchaOptions}
                                 searchable
-                                key={form.key('jugador_id')}
-                                {...form.getInputProps('jugador_id')}
+                                key={form.key('cancha_id')}
+                                {...form.getInputProps('cancha_id')}
+
                             />
-                            <Box>
-                                <Button
-                                    size="xs"
-                                    variant="outline"
-                                    leftSection={<IconPlus />}
-                                    onClick={openJugadorModal}
-                                >
-                                    Nuevo jugador
-                                </Button>
-                            </Box>
-                        </Stack>
+                            <Stack gap={'xs'}>
+                                <Select
+                                    required
+                                    label="Jugador"
+                                    placeholder="Seleccione un jugador"
+                                    data={jugadorOptions}
+                                    searchable
+                                    key={form.key('jugador_id')}
+                                    {...form.getInputProps('jugador_id')}
+                                />
+                                <Box>
+                                    <Button
+                                        size="xs"
+                                        variant="outline"
+                                        leftSection={<IconPlus />}
+                                        onClick={openJugadorModal}
+                                    >
+                                        Nuevo jugador
+                                    </Button>
+                                </Box>
+                            </Stack>
 
-                        <DateTimePicker
-                            required
-                            label="Fecha/hora"
-                            placeholder="Selecciona fecha y hora"
-                            valueFormat="DD/MM/YYYY HH:mm"
+                            <DateTimePicker
+                                required
+                                label="Fecha/hora"
+                                placeholder="Selecciona fecha y hora"
+                                valueFormat="DD/MM/YYYY HH:mm"
 
-                            timePickerProps={{
-                                withDropdown: true,
-                                popoverProps: { withinPortal: false },
-                                format: '24h',
-                                minutesStep: 60
-                            }}
+                                timePickerProps={{
+                                    withDropdown: true,
+                                    popoverProps: { withinPortal: false },
+                                    format: '24h',
+                                    minutesStep: 60
+                                }}
 
-                            key={form.key('fecha_hora')}
-                            {...form.getInputProps('fecha_hora')}
-                        />
+                                key={form.key('fecha_hora')}
+                                {...form.getInputProps('fecha_hora')}
+                            />
 
-                        {/* <TimeGrid
+                            {/* <TimeGrid
                             data={getTimeRange({ startTime: '08:00', endTime: '23:00', interval: '01:00' })}
                         /> */}
 
-                        <Input.Wrapper label="Duracion"
-                            error={form.errors.duracion}
-                        >
-                            <Slider
-                                defaultValue={60}
-                                w={'95%'} mx="auto"
-                                key={form.key('duracion')}
-                                step={60}
-                                min={60}
-                                max={240}
-                                showLabelOnHover={false}
-                                marks={[
-                                    { value: 60, label: '1 hora' },
-                                    { value: 120, label: '2 horas' },
-                                    { value: 180, label: '3 horas' },
-                                    { value: 240, label: '4 horas' },
-                                ]}
-                                {...form.getInputProps('duracion')}
-                            />
-                        </Input.Wrapper>
-                    </>
-                )}
-            </DataForm>
+                            <Input.Wrapper label="Duracion"
+                                error={form.errors.duracion}
+                            >
+                                <Slider
+                                    defaultValue={60}
+                                    w={'95%'} mx="auto"
+                                    key={form.key('duracion')}
+                                    step={60}
+                                    min={60}
+                                    max={240}
+                                    showLabelOnHover={false}
+                                    marks={[
+                                        { value: 60, label: '1 hora' },
+                                        { value: 120, label: '2 horas' },
+                                        { value: 180, label: '3 horas' },
+                                        { value: 240, label: '4 horas' },
+                                    ]}
+                                    {...form.getInputProps('duracion')}
+                                />
+                            </Input.Wrapper>
+                        </>
+                    )}
+                </DataForm>
+                <LoadingOverlay visible={reservaQuery.isLoading} />
+                {reservaQuery.error && <EntityToEditNotFoundAlert mt="xl" />}
+            </Box>
         </MainLayout >
     )
 } 

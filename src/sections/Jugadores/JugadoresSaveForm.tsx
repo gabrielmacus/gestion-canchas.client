@@ -1,4 +1,4 @@
-import { TextInput } from "@mantine/core";
+import { Box, LoadingOverlay, TextInput } from "@mantine/core";
 import DataForm from "../SharedKernel/DataForm";
 import type { Jugador } from "../../modules/Jugadores/Domain/Jugador";
 import { useJugadoresContext } from "./JugadoresContext";
@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditarJugador from "../../modules/Jugadores/Application/EditarJugador";
 import JugadorSchema from "./JugadorSchema";
+import EntityToEditNotFoundAlert from "../SharedKernel/EntityToEditNotFoundAlert";
 
 export interface JugadoresSaveFormProps {
     afterSubmit?: () => void;
@@ -44,23 +45,29 @@ export default function JugadoresSaveForm(props: JugadoresSaveFormProps) {
     };
 
     return (
-        <DataForm
-            title={title}
-            onSubmit={onSubmit}
-            initialValues={initialValues}
-            schema={schema}
-            onSubmitError={(error) => {
-                console.error(error);
-            }}
-        >
-            {(form) => (
-                <>
-                    <TextInput required label='Nombre' {...form.getInputProps('nombre')} />
-                    <TextInput required label='Apellido' {...form.getInputProps('apellido')} />
-                    <TextInput required label='Teléfono' {...form.getInputProps('telefono')} />
-                    <TextInput label='Email' {...form.getInputProps('email')} />
-                </>
-            )}
-        </DataForm>
+        <Box pos="relative">
+
+            <DataForm
+                title={title}
+                onSubmit={onSubmit}
+                initialValues={initialValues}
+                schema={schema}
+                disableSubmit={query.isError}
+                onSubmitError={(error) => {
+                    console.error(error);
+                }}
+            >
+                {(form) => (
+                    <>
+                        <TextInput required label='Nombre' {...form.getInputProps('nombre')} />
+                        <TextInput required label='Apellido' {...form.getInputProps('apellido')} />
+                        <TextInput required label='Teléfono' {...form.getInputProps('telefono')} />
+                        <TextInput label='Email' {...form.getInputProps('email')} />
+                    </>
+                )}
+            </DataForm>
+            <LoadingOverlay visible={query.isLoading} />
+            {query.error && <EntityToEditNotFoundAlert mt="xl" />}
+        </Box>
     );
 }

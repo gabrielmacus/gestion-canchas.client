@@ -88,7 +88,7 @@ export default function ReservasListFilters({ onSubmit, loading }: ReservasListF
         if (values.fecha) {
             const from_date = dayjs(values.fecha).startOf('day')
             const to_date = dayjs(values.fecha).endOf('day')
-            console.log(from_date, to_date)
+
             filters.push({
                 field: 'fecha_hora',
                 operator: Operator.GTE,

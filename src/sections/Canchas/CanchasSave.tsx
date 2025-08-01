@@ -1,4 +1,4 @@
-import { TextInput, Switch } from "@mantine/core";
+import { TextInput, Switch, LoadingOverlay, Box } from "@mantine/core";
 import MainLayout from "../SharedKernel/Layouts/MainLayout";
 import DataForm from "../SharedKernel/DataForm";
 import type { Cancha } from "../../modules/Canchas/Domain/Cancha";
@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditarCancha from "../../modules/Canchas/Application/EditarCancha";
 import CanchaSchema from "./CanchaSchema";
+import EntityToEditNotFoundAlert from "../SharedKernel/EntityToEditNotFoundAlert";
 
 
 export interface CanchasSaveProps {
@@ -35,32 +36,38 @@ export default function CanchasSave(_: CanchasSaveProps) {
     }
 
     return <MainLayout>
-        <DataForm
-            title={title}
-            onSubmit={onSubmit}
-            initialValues={initialValues}
-            schema={CanchaSchema}
-            onSubmitError={(error) => {
-                console.error(error)
-            }}
-        >
-            {(form) => <>
-                <TextInput required key={form.key('nombre')} label='Nombre' {...form.getInputProps('nombre')} />
-                <Switch
-                    label='Cancha techada'
-                    //checked={form.values.techada}
-                    //onChange={(event) => {
-                    //    form.setFieldValue('techada', event.target.checked)
-                    //}}
-                    key={form.key('techada')}
+        <Box pos="relative">
+            <DataForm
+                title={title}
+                onSubmit={onSubmit}
+                initialValues={initialValues}
+                schema={CanchaSchema}
+                disableSubmit={query.isError}
+                onSubmitError={(error) => {
+                    console.error(error)
+                }}
+            >
+                {(form) => <>
+                    <TextInput required key={form.key('nombre')} label='Nombre' {...form.getInputProps('nombre')} />
+                    <Switch
+                        label='Cancha techada'
+                        //checked={form.values.techada}
+                        //onChange={(event) => {
+                        //    form.setFieldValue('techada', event.target.checked)
+                        //}}
+                        key={form.key('techada')}
 
-                    {...form.getInputProps('techada', {
-                        type: 'checkbox'
-                    })}
+                        {...form.getInputProps('techada', {
+                            type: 'checkbox'
+                        })}
 
-                />
-            </>}
-        </DataForm>
+                    />
+                </>}
+            </DataForm>
+            <LoadingOverlay visible={query.isLoading} />
+            {query.error && <EntityToEditNotFoundAlert mt="xl" />}
+        </Box>
+
 
     </MainLayout>
 } 

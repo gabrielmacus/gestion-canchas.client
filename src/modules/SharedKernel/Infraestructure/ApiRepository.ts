@@ -16,7 +16,7 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
     }
 
     const handleError = (error: unknown) => {
-        console.log(error)
+        console.error(error)
         if (error instanceof AxiosError && error.response?.data.detail) {
             throw new RequestError(error.message, error.response?.data.detail, error.response?.status.toString())
         }

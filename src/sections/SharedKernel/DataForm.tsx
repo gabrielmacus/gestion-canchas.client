@@ -15,6 +15,7 @@ export interface DataFormProps<T extends Record<string, any>> {
     children: (form: ReturnType<typeof useForm<Partial<T>>>) => React.ReactNode
     title?: string
     schema: z.ZodSchema<Partial<T>>
+    disableSubmit?: boolean
 }
 
 export default function DataForm<T extends Record<string, any>>(props: DataFormProps<Partial<T>>) {
@@ -64,6 +65,7 @@ export default function DataForm<T extends Record<string, any>>(props: DataFormP
     }, [props.initialValues])
 
     return <Paper pos="relative" shadow="sm" p="lg" maw={768}>
+
         {props.title && <Text fw={600} size="lg" mb={'xs'} >{props.title}</Text>}
         <form onSubmit={
             form.onSubmit(onSubmit)
@@ -73,7 +75,7 @@ export default function DataForm<T extends Record<string, any>>(props: DataFormP
                     {props.children(form)}
                 </Stack>
                 <Group>
-                    <Button type="submit">Aceptar</Button>
+                    <Button type="submit" disabled={props.disableSubmit}>Aceptar</Button>
                 </Group>
             </Stack>
         </form>

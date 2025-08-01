@@ -14,6 +14,7 @@ import { DeleteRowAction } from "../SharedKernel/RowActions";
 import EliminarCancha from "../../modules/Canchas/Application/EliminarCancha";
 import type { Filter } from "../../modules/SharedKernel/Domain/Criteria";
 import CanchasListFilters from "./CanchasListFilters";
+import { notifications } from "@mantine/notifications";
 
 
 export default function CanchasList() {
@@ -32,7 +33,7 @@ export default function CanchasList() {
             pagination: paginationSettings
         })
     })
-    console.log(query.error, query.data, query.isLoading)
+
     const actions: DataTableAction[] = [
         {
             label: 'Nueva cancha',
@@ -44,8 +45,17 @@ export default function CanchasList() {
     const rowActions: DataRowAction<Cancha>[] = [
         EditRowAction(module, navigate),
         DeleteRowAction('¿Desea eliminar la cancha?', async (rowItem) => {
-            await EliminarCancha(repository, rowItem.id)
-            await query.refetch()
+            try {
+                await EliminarCancha(repository, rowItem.id)
+                await query.refetch()
+            } catch (error) {
+                notifications.show({
+                    title: 'Error al eliminar la cancha',
+                    message: 'Compruebe que la cancha no tenga reservas asociadas e intente nuevamente. Si el problema persiste, contacte al administrador.',
+                    color: 'red',
+                    autoClose: 20000
+                })
+            }
         })
     ]
     return <MainLayout>
