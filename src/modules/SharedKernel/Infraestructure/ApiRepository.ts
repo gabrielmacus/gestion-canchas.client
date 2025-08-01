@@ -11,7 +11,8 @@ interface ApiRepository<T> extends Repository<T> {
 
 export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
     const headers = {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        crossDomain: true
     }
 
     const handleError = (error: unknown) => {
@@ -24,7 +25,9 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
     return {
         getPaginated: async (criteria: Criteria) => {
             const query = parseCriteriaToQuery(criteria)
-            const response = await axios.get<PaginatedResponse<T>>(`${baseUrl}?${query}`, {
+            const response = await axios.get<PaginatedResponse<T>>(
+                `${baseUrl}/?${query}`, {
+
                 headers
             })
             return response.data
@@ -42,7 +45,7 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
         },
         create: async (entity: T) => {
             try {
-                const response = await axios.post<T>(baseUrl, entity, {
+                const response = await axios.post<T>(`${baseUrl}/`, entity, {
                     headers
                 })
                 return response.data
