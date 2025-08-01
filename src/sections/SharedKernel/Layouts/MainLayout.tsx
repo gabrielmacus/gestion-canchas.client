@@ -8,7 +8,16 @@ export interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
     const [opened, { toggle }] = useDisclosure(false);
-    return <AppShell>
+    return <AppShell
+        padding="xl"
+        header={{ height: 60 }}
+        navbar={{
+            width: 300,
+            breakpoint: 'sm',
+            collapsed: { mobile: !opened },
+        }}
+
+    >
         <AppShell.Header>
             <Burger
                 opened={opened}
@@ -18,7 +27,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
             />
             <div>Logo</div>
         </AppShell.Header>
-        <AppShell.Main>
+        <AppShell.Navbar>Navbar</AppShell.Navbar>
+        <AppShell.Main bg={'gray.1'}>
             {children}
         </AppShell.Main>
     </AppShell>

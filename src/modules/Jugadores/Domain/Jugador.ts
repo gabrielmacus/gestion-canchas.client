@@ -1,11 +1,9 @@
-export interface Jugador {
-    id: string;
+import type BaseEntity from "../../SharedKernel/Domain/BaseEntity";
+
+export interface Jugador extends BaseEntity {
     nombre: string;
     apellido: string;
-    contacto: Contacto;
+    telefono: string;
+    email?: string | null;
 }
 
-interface Contacto {
-    telefono: string;
-    email: string;
-}
