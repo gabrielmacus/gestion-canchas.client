@@ -78,7 +78,7 @@ export default function CanchasListFilters({ onSubmit, loading }: CanchasListFil
                 </Accordion.Control>
                 <Accordion.Panel>
                     <form onSubmit={form.onSubmit(onSubmitForm)}>
-                        <Stack>
+                        <Stack gap={'xs'}>
                             <Group>
                                 <TextInput size="xs" label="Nombre" {...form.getInputProps('nombre')} />
                                 <Select

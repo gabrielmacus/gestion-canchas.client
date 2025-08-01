@@ -1,4 +1,4 @@
-import { Box, Group, LoadingOverlay, Paper, Table, Text } from "@mantine/core";
+import { Box, Group, LoadingOverlay, Paper, ScrollArea, Table, Text } from "@mantine/core";
 import DataPagination from "./DataPagination";
 import type { DataTableAction } from "./DataTableActions";
 import DataTableActions from "./DataTableActions";
@@ -56,18 +56,24 @@ export default function DataTable<T>({ columns, data, id_accessor, paginationDat
         <Box pos="relative"  >
             {title && <Text fw={600} size="lg" mb={'md'} >{title}</Text>}
             {filters && <Box mb={'md'}>{filters}</Box>}
-            <Table mb={'xl'} striped withTableBorder >
-                <Table.Thead>
-                    <Table.Tr>
-                        {renderHeaders()}
-                    </Table.Tr>
-                </Table.Thead>
 
-                <Table.Tbody>
-                    {renderRows()}
-                </Table.Tbody>
+            <ScrollArea
+                mb={'xl'}
+            >
+                <Table striped withTableBorder >
+                    <Table.Thead bg={'dark.4'} c={'white'}>
+                        <Table.Tr>
+                            {renderHeaders()}
+                            {rowActions && <Table.Th></Table.Th>}
+                        </Table.Tr>
+                    </Table.Thead>
 
-            </Table>
+                    <Table.Tbody>
+                        {renderRows()}
+                    </Table.Tbody>
+
+                </Table>
+            </ScrollArea>
             {shouldRenderFooter && <Group justify="space-between">
                 {paginationData &&
                     <DataPagination

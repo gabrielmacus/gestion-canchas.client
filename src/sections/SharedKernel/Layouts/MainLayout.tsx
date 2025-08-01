@@ -1,4 +1,4 @@
-import { AppShell, Burger, NavLink, Text } from "@mantine/core";
+import { AppShell, Burger, Grid, Group, NavLink, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -44,13 +44,16 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
     >
         <AppShell.Header bg={'dark.8'}>
-            <Burger
-                opened={opened}
-                onClick={toggle}
-                hiddenFrom="sm"
-                size="sm"
-            />
-            <Text c={'white'} fw={700} size="xl" p={'md'}>Gestión de canchas</Text>
+            <Group justify="space-between">
+                <Burger
+                    color='white'
+                    opened={opened}
+                    onClick={toggle}
+                    hiddenFrom="sm"
+                    size="sm"
+                />
+                <Text c={'white'} fw={700} size="xl" p={'md'}>Gestión de canchas</Text>
+            </Group>
         </AppShell.Header>
         <AppShell.Navbar>
             <Navbar items={[

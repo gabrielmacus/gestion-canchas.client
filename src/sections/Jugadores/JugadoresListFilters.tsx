@@ -78,7 +78,7 @@ export default function JugadoresListFilters({ onSubmit, loading }: JugadoresLis
                 </Accordion.Control>
                 <Accordion.Panel>
                     <form onSubmit={form.onSubmit(onSubmitForm)}>
-                        <Stack>
+                        <Stack gap={'xs'}>
                             <Group>
                                 <TextInput size="xs" label="Nombre" {...form.getInputProps('nombre')} />
                                 <TextInput size="xs" label="Apellido" {...form.getInputProps('apellido')} />

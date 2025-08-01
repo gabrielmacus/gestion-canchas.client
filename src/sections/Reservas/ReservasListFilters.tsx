@@ -139,7 +139,7 @@ export default function ReservasListFilters({ onSubmit, loading }: ReservasListF
                     </Accordion.Control>
                     <Accordion.Panel>
                         <form onSubmit={form.onSubmit(onSubmitForm)}>
-                            <Stack>
+                            <Stack gap={'xs'}>
                                 <Group>
                                     <DatePickerInput
                                         size="xs"
