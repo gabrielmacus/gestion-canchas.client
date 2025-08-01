@@ -6,7 +6,10 @@ import { BrowserRouter } from 'react-router'
 import { MantineProvider } from '@mantine/core'
 import { ModalsProvider } from '@mantine/modals';
 import { CanchasContextProvider } from '../../Canchas/CanchasContext';
+import { ReservasContextProvider } from '../../Reservas/ReservasContext';
+import { DatesProvider } from '@mantine/dates';
 
+import 'dayjs/locale/es';
 
 const queryClient = new QueryClient()
 
@@ -16,13 +19,24 @@ const ReactQueryProvider = ({ children }: { children: React.ReactNode }) => (
     </QueryClientProvider>
 )
 
+const LocalDatesProvider = ({ children }: { children: React.ReactNode }) => (
+    <DatesProvider settings={{
+        locale: 'es',
+        firstDayOfWeek: 1
+    }}>
+        {children}
+    </DatesProvider>
+)
+
 const providers = [
     BrowserRouter,
     MantineProvider,
     ModalsProvider,
     ReactQueryProvider,
+    LocalDatesProvider,
     JugadoresContextProvider,
-    CanchasContextProvider
+    CanchasContextProvider,
+    ReservasContextProvider
 ]
 
 export const AppProviders = createComposedProvider(providers) 

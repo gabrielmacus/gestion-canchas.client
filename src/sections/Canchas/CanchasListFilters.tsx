@@ -27,6 +27,7 @@ export default function CanchasListFilters({ onSubmit, loading }: CanchasListFil
             return values
         }
         catch (e) {
+            console.error(e)
         }
         return {}
     }

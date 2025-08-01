@@ -27,6 +27,7 @@ export default function JugadoresListFilters({ onSubmit, loading }: JugadoresLis
             return values
         }
         catch (e) {
+            console.error(e)
         }
         return {}
     }

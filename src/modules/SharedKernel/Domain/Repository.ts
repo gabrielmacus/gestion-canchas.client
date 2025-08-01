@@ -1,6 +1,10 @@
 import type Criteria from "./Criteria"
 import type PaginatedResponse from "./PaginatedResponse"
 
+export interface RequestResponse {
+
+}
+
 export interface Creator<T> {
     create(entity: T): Promise<T>
 }

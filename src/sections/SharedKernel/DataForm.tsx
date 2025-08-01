@@ -1,12 +1,15 @@
-import { Button, Checkbox, Group, LoadingOverlay, Paper, Stack, Text } from "@mantine/core";
-import { useForm, type FormValidateInput } from "@mantine/form";
+import { Button, Group, LoadingOverlay, Paper, Stack, Text } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { z } from 'zod/v4';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 
 import { useEffect, useState } from "react";
+import { notifications } from "@mantine/notifications";
+import RequestError from "../../modules/SharedKernel/Domain/RequestError";
 
 export interface DataFormProps<T extends Record<string, any>> {
     onSubmit: (values: Partial<T>) => Promise<void>
+    onValuesChange?: (values: Partial<T>) => void
     onSubmitError?: (error: unknown) => void
     initialValues?: T
     children: (form: ReturnType<typeof useForm<Partial<T>>>) => React.ReactNode
@@ -23,7 +26,12 @@ export default function DataForm<T extends Record<string, any>>(props: DataFormP
         validateInputOnChange: true,
         transformValues: (values) => {
             return props.schema.parse(values)
-        }
+        },
+        onValuesChange(values) {
+            if (props.onValuesChange) {
+                props.onValuesChange(values)
+            }
+        },
     })
 
     const onSubmit = async (values: Partial<T>) => {
@@ -31,6 +39,18 @@ export default function DataForm<T extends Record<string, any>>(props: DataFormP
         try {
             await props.onSubmit(values)
         } catch (error) {
+            console.log(error)
+            let msg = "Error desconocido. Intente nuevamente"
+            if (error instanceof RequestError) {
+                msg = error.detail
+            }
+            notifications.show({
+                title: 'Error',
+                message: msg,
+                color: 'red',
+                position: 'bottom-center'
+            })
+
             props.onSubmitError?.(error)
         } finally {
             setIsLoading(false)

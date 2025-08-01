@@ -8,5 +8,8 @@ export function parseCriteriaToQuery(criteria: Criteria) {
         query.append('page', pagination.page.toString())
         query.append('size', pagination.size.toString())
     }
+    if (criteria.orders) {
+        query.append('orders', criteria.orders.map(order => `${order.field}:${order.direction}`).join(','))
+    }
     return query.toString()
 }

@@ -29,7 +29,11 @@ export default function JugadoresList() {
         queryKey: ['jugadores', paginationSettings, filters],
         queryFn: () => ListarJugadoresPaginados(repository, {
             filters: filters,
-            pagination: paginationSettings
+            pagination: paginationSettings,
+            orders: [{
+                field: 'apellido',
+                direction: 'asc'
+            }]
         })
     })
     const actions: DataTableAction[] = [
@@ -52,13 +56,12 @@ export default function JugadoresList() {
             isLoading={query.isLoading}
             title="Jugadores"
             columns={[
-                { label: 'Nombre', accessor: 'nombre' },
-                { label: 'Apellido', accessor: 'apellido' }
+                { label: 'Apellido', accessor: 'apellido' },
+                { label: 'Nombre', accessor: 'nombre' }
             ]}
             rowActions={rowActions}
             data={query.data?.items}
             filters={<JugadoresListFilters onSubmit={(f) => {
-                console.log("FILTER!!!!", f)
                 setFilters(f)
                 setPaginationSettings({
                     ...paginationSettings,

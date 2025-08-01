@@ -22,7 +22,13 @@ export interface Filter {
     value: string
 }
 
+export interface Order {
+    field: string
+    direction: 'asc' | 'desc'
+}
+
 export default interface Criteria {
     filters?: Filter[]
     pagination?: Pagination
+    orders?: Order[]
 }
