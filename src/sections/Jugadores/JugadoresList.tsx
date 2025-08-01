@@ -27,7 +27,7 @@ export default function JugadoresList() {
     })
     const [filters, setFilters] = useState<Filter[]>([])
     const query = useQuery<PaginatedResponse<Jugador>>({
-        queryKey: ['jugadores', paginationSettings,],
+        queryKey: ['jugadores', paginationSettings, filters],
         queryFn: () => ListarJugadoresPaginados(repository, {
             filters: filters,
             pagination: paginationSettings,
