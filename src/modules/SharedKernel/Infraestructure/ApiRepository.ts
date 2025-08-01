@@ -13,6 +13,14 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
     const headers = {
         'Content-Type': 'application/json'
     }
+
+    const handleError = (error: unknown) => {
+        console.log(error)
+        if (error instanceof AxiosError && error.response?.data.detail) {
+            throw new RequestError(error.message, error.response?.data.detail, error.response?.status.toString())
+        }
+    }
+
     return {
         getPaginated: async (criteria: Criteria) => {
             const query = parseCriteriaToQuery(criteria)
@@ -28,9 +36,7 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
                 })
                 return response.data
             } catch (error) {
-                if (error instanceof AxiosError && error.response?.data.detail) {
-                    throw new RequestError(error.message, error.response?.data.detail, error.response?.data.code ?? "UNKNOWN_ERROR")
-                }
+                handleError(error)
                 throw error
             }
         },
@@ -41,9 +47,7 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
                 })
                 return response.data
             } catch (error) {
-                if (error instanceof AxiosError && error.response?.data.detail) {
-                    throw new RequestError(error.message, error.response?.data.detail, error.response?.data.code)
-                }
+                handleError(error)
                 throw error
             }
         },
@@ -54,9 +58,7 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
                 })
                 return response.data
             } catch (error) {
-                if (error instanceof AxiosError && error.response?.data.detail) {
-                    throw new RequestError(error.message, error.response?.data.detail, error.response?.data.code)
-                }
+                handleError(error)
                 throw error
             }
         },
@@ -66,9 +68,7 @@ export function createApiRepository<T>(baseUrl: string): ApiRepository<T> {
                     headers
                 })
             } catch (error) {
-                if (error instanceof AxiosError && error.response?.data.detail) {
-                    throw new RequestError(error.message, error.response?.data.detail, error.response?.data.code)
-                }
+                handleError(error)
                 throw error
             }
         }

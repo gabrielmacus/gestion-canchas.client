@@ -35,7 +35,7 @@ export default function JugadoresListFilters({ onSubmit, loading }: JugadoresLis
         nombre: z.string().optional(),
         apellido: z.string().optional()
     })
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams, _] = useSearchParams()
     const initialValues = parseQueryString()
     const isOpen = searchParams.get('q') ? 'header' : undefined
     const form = useForm({

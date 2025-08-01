@@ -1,6 +1,6 @@
 import { useForm } from "@mantine/form";
 import { Accordion, Button, Group, Paper, Stack, Select } from "@mantine/core";
-import { DatePicker, DatePickerInput, DateTimePicker } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import { IconFilter, IconSearch } from "@tabler/icons-react";
 import { Operator, type Filter } from "../../modules/SharedKernel/Domain/Criteria";
 import { useSearchParams } from "react-router";
@@ -69,7 +69,7 @@ export default function ReservasListFilters({ onSubmit, loading }: ReservasListF
         jugador_id: z.string().nullish()
     })
 
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams, _] = useSearchParams()
     const initialValues = parseQueryString()
     const isOpen = searchParams.get('q') ? 'header' : undefined
     const form = useForm({

@@ -3,6 +3,7 @@ export interface Pagination {
     size: number
 }
 
+//@ts-ignore TODO: ver porque no me deja usar enumerador la nueva regla de ts
 export enum Operator {
     EQ = "eq",
     NEQ = "neq",

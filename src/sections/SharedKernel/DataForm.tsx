@@ -39,11 +39,11 @@ export default function DataForm<T extends Record<string, any>>(props: DataFormP
         try {
             await props.onSubmit(values)
         } catch (error) {
-            console.log(error)
             let msg = "Error desconocido. Intente nuevamente"
             if (error instanceof RequestError) {
-                msg = error.detail
+                msg = error.code == "422" ? "Error de validación. Revise los campos" : error.detail
             }
+
             notifications.show({
                 title: 'Error',
                 message: msg,

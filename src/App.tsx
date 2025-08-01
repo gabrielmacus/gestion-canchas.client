@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from 'react-router'
 import JugadoresList from './sections/Jugadores/JugadoresList'
 import JugadoresSave from './sections/Jugadores/JugadoresSave'
 import CanchasList from './sections/Canchas/CanchasList'
@@ -16,7 +16,7 @@ function App() {
 
   return (
     <Routes>
-      <Route path='/' element={<JugadoresList />} />
+      <Route path='/' element={<Navigate to='/reservas' />} />
 
       <Route path='/jugadores' element={<JugadoresList />} />
       <Route path='/jugadores/create' element={<JugadoresSave />} />

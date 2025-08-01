@@ -35,7 +35,7 @@ export default function CanchasListFilters({ onSubmit, loading }: CanchasListFil
         nombre: z.string().nullish(),
         techada: z.string().nullish()
     })
-    const [searchParams, setSearchParams] = useSearchParams()
+    const [searchParams, _] = useSearchParams()
     const initialValues = parseQueryString()
     const isOpen = searchParams.get('q') ? 'header' : undefined
     const form = useForm({

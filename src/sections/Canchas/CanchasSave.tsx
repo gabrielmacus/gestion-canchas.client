@@ -7,7 +7,7 @@ import CrearCancha from "../../modules/Canchas/Application/CrearCancha";
 import { useNavigate, useParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import EditarCancha from "../../modules/Canchas/Application/EditarCancha";
-import { z } from "zod";
+import CanchaSchema from "./CanchaSchema";
 
 
 export interface CanchasSaveProps {
@@ -24,11 +24,6 @@ export default function CanchasSave(_: CanchasSaveProps) {
     const initialValues = query.data ?? undefined
     const title = id ? 'Editar cancha' : 'Nueva cancha'
 
-    const schema = z.object({
-        nombre: z.string().min(1, 'El nombre es requerido'),
-        techada: z.boolean().default(false)
-    })
-
     const onSubmit = async (values: Partial<Cancha>) => {
 
         if (id) {
@@ -44,7 +39,7 @@ export default function CanchasSave(_: CanchasSaveProps) {
             title={title}
             onSubmit={onSubmit}
             initialValues={initialValues}
-            schema={schema}
+            schema={CanchaSchema}
             onSubmitError={(error) => {
                 console.error(error)
             }}
